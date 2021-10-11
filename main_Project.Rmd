@@ -9,3 +9,19 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{r load_packages}
+
+library(tidyverse)
+
+```
+
+
+
+```{r load_dataset}
+
+ow <- readr::read_csv("neiss2020.csv")
+
+head(ow)
+
+```
+
