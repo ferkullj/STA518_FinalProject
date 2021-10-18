@@ -12,16 +12,106 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r load_packages}
 
 library(tidyverse)
+library(mosaic) # for tallying
+#install.packages("tidytext")
+library(tidytext) # for getting freq of words
 
 ```
-
-
 
 ```{r load_dataset}
 
 ow <- readr::read_csv("neiss2020.csv")
 
-head(ow)
+```
+
+```{r subsetting_data}
+
+bow <- ow %>% 
+  subset(Age > 200)
+aow <- ow %>% 
+  subset(Age <200 & Age > 17)
+
+```
+
+```{r creating age in months}
+
+bow <- bow %>% 
+  mutate( Age_in_Months = Age - 200) %>% 
+  select(-c("Age", "Other_Race","Other_Diagnosis", "Other_Diagnosis_2", "Stratum", "PSU", "Weight" ))
+
+
+```
+
+```{r viewing counts}
+
+tally(~Age_in_Months, data= bow, format= "percent", margin=TRUE)
+tally(~Sex, data= bow, format= "percent", margin=TRUE)
+tally(~Product_1, data= bow, format= "percent", margin=TRUE)
+
+#freq <- function(x){
+ # tally(~x, data= bow, format= "percent", margin=TRUE)
+#}
+#freq(Sex)
+
+```
+
+```{r breaking down Treatment_Date variable}
+
+bow <- bow %>% 
+  separate(Treatment_Date, into = c("Month", "Day", "Year"),"/") %>% 
+  select( -("Year"))
+  
+bow <- bow %>% 
+  mutate(Day = case_when(
+    Day == 5 | Day == 12 | Day == 19 | Day == 26 ~ "Sunday",
+    Day == 6 | Day == 13 | Day == 20 | Day == 27 ~ "Monday",
+    Day == 7 | Day == 14 | Day == 21 | Day == 28 ~ "Tuesday",
+    Day == 1 | Day == 8  | Day == 15 | Day == 22 | Day == 29 ~ "Wednesday",
+    Day == 2 | Day == 9  | Day == 16 | Day == 23 | Day == 30 ~ "Thursday",
+    Day == 3 | Day == 10 | Day == 17 | Day == 24 | Day == 31 ~ "Friday", TRUE ~ "Saturday"
+  ))
+#counting number of cases per month
+bow %>% 
+  group_by(Day, Month) %>% 
+  summarise(day_count = n()) %>% 
+ggplot(aes(x = Month, y = day_count)) +
+  geom_col(state = "identity")
+
+#counting number of cases per day of week
+#W,R, & F had 4 days, the rest had 3
+bow %>% 
+  ggplot(aes(x = Day)) +
+  geom_bar()
+
+```
+
+
+```{r breaking down Narrative_1 variable}
+
+Narrative <- bow %>% 
+  pull(Narrative_1)
+Narrative <- tibble(Narrative)
+
+filt_nar <- Narrative %>% 
+  unnest_tokens(word, Narrative) %>% 
+  anti_join(tidytext::stop_words) %>% 
+  count(word, sort=TRUE)
+
+extra_words = c("dx","pt","mom", "mof", "chi", "lac", "fx", "loc", "rt")
+
+filt_nar <- filt_nar %>% 
+  filter(!word %in% extra_words)
+
+```
+
+```{r assembling wordcloud}
+
+require(devtools)
+#install_github("lchiffon/wordcloud2")
+library(wordcloud2)
+wordcloud2(filt_nar,
+           color = "red",
+           backgroundColor = "white")
 
 ```
 
