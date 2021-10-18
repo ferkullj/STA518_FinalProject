@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r load_packages}
+```{r load_packages, message = FALSE}
 
 library(tidyverse)
 library(mosaic) # for tallying
