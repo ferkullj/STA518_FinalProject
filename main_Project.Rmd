@@ -44,14 +44,25 @@ bow <- bow %>%
 
 ```{r viewing counts}
 
-tally(~Age_in_Months, data= bow, format= "percent", margin=TRUE)
-tally(~Sex, data= bow, format= "percent", margin=TRUE)
-tally(~Product_1, data= bow, format= "percent", margin=TRUE)
+#tally(~Age_in_Months, data= bow, format= "percent", margin=TRUE)
+#tally(~Sex, data= bow, format= "percent", margin=TRUE)
+#tally(~Product_1, data= bow, format= "percent", margin=TRUE)
 
-#freq <- function(x){
- # tally(~x, data= bow, format= "percent", margin=TRUE)
-#}
-#freq(Sex)
+#group by product used
+bow %>% 
+  group_by(Product_1) %>% 
+  summarise(n=n()) %>% 
+  arrange(desc(n))
+
+#group by body part
+bow %>% 
+  group_by(Body_Part) %>% 
+  summarise(n=n()) %>% 
+  arrange(desc(n))
+
+#group by diagnosis
+
+
 
 ```
 
