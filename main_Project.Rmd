@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r load_packages, message = FALSE}
+```{r load_packages, include = FALSE}
 
 library(tidyverse)
 library(mosaic) # for tallying
@@ -32,6 +32,21 @@ aow <- ow %>%
   subset(Age <200 & Age > 17)
 
 ```
+
+```{r getting variable code descriptions from pdf}
+#install.packages("Rcpp")
+library(Rcpp)
+#install.packages("pdftools")
+library(pdftools)
+
+download.file("https://www.cpsc.gov/s3fs-public/2019_NEISS_Coding_Manual.pdf", "product_codes.pdf", mode = "w")
+
+product_codes <- pdf_text("product_codes.pdf")
+
+cat(product_codes[175])#:191])
+
+```
+
 
 ```{r creating age in months}
 
@@ -65,6 +80,34 @@ bow %>%
 
 
 ```
+
+```{r dealing with top 10 products}
+
+bow <- bow %>% 
+  mutate(Product_1 = case_when(
+    Product_1 == 4076 ~ "beds or bedframes",
+    Product_1 == 1807 ~ "floors or flooring materials",
+    Product_1 == 1842 ~ "stairs or steps",
+    Product_1 == 679 ~ "couches",
+    Product_1 == 4057 ~ "tables",
+    Product_1 == 4074 ~ "chairs",
+    Product_1 == 1893 ~ "doors",
+    Product_1 == 1395 ~ "toys",
+    Product_1 == 611 ~ "bathtubs",
+    Product_1 == 1931 ~ "tablet or capsule drugs",
+    TRUE ~ as.character(Product_1)
+  ))
+
+bow %>% 
+  group_by(Product_1) %>% 
+  summarise(n=n()) %>% 
+  arrange(desc(n)) %>% 
+  slice_head(n=10) %>% 
+  ggplot(aes(x= Product_1, y=n))+
+  geom_col() + coord_flip()
+
+```
+
 
 ```{r breaking down Treatment_Date variable}
 
