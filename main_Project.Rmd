@@ -39,12 +39,21 @@ library(Rcpp)
 #install.packages("pdftools")
 library(pdftools)
 
+
 download.file("https://www.cpsc.gov/s3fs-public/2019_NEISS_Coding_Manual.pdf", "product_codes.pdf", mode = "w")
 
-product_codes <- pdf_text("product_codes.pdf")
+product_data <- pdf_data("product_codes.pdf")
+text_analysis <- as.data.frame(product_data[175])
 
-cat(product_codes[175])#:191])
+text_values <- text_analysis %>% 
+  select(-c("width", "height", "x", "y", "space")) %>%
+  slice(21:233) %>% 
+  pull(text)
+unlist(str_split(text_values, " ,"))
 
+product_list <- split(text_values, cumsum(str_detect(text_values, "[:digit:]")))
+
+  
 ```
 
 
