@@ -12,7 +12,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r load_packages, include = FALSE}
 
 library(tidyverse)
-library(mosaic) # for tallying
 #install.packages("tidytext")
 library(tidytext) # for getting freq of words
 
@@ -49,11 +48,14 @@ text_values <- text_analysis %>%
   select(-c("width", "height", "x", "y", "space")) %>%
   slice(21:233) %>% 
   pull(text)
+
+#str_split(text_values, "...[:digit:]" )
+
 unlist(str_split(text_values, " ,"))
 
 product_list <- split(text_values, cumsum(str_detect(text_values, "[:digit:]")))
 
-  
+#codes <- as.data.frame(product_list)
 ```
 
 
@@ -67,10 +69,6 @@ bow <- bow %>%
 ```
 
 ```{r viewing counts}
-
-#tally(~Age_in_Months, data= bow, format= "percent", margin=TRUE)
-#tally(~Sex, data= bow, format= "percent", margin=TRUE)
-#tally(~Product_1, data= bow, format= "percent", margin=TRUE)
 
 #group by product used
 bow %>% 
