@@ -5,15 +5,8 @@ library(hrbrthemes)
 library(shinythemes)
 
 neiss <- readr::read_csv("neiss2020.csv")
-Babies <- neiss %>% 
-    subset(Age > 200) %>% 
-    mutate( Age_in_Months = Age - 200)
-Adults <- neiss %>% 
-    subset(Age <200 & Age > 17)
-Kids <- neiss %>%
-    subset(Age <18 & Age > 1)
 
-Babies2 <- Babies %>% 
+neiss <- neiss %>% 
     mutate(Product_1 = case_when(
         Product_1 == 4076 ~ "beds or bedframes",
         Product_1 == 1807 ~ "floors or flooring materials",
@@ -27,6 +20,15 @@ Babies2 <- Babies %>%
         Product_1 == 1931 ~ "tablet or capsule drugs",
         TRUE ~ as.character(Product_1)
     ))
+
+Babies <- neiss %>% 
+    subset(Age > 200) %>% 
+    mutate( Age_in_Months = Age - 200)
+Adults <- neiss %>% 
+    subset(Age <200 & Age > 17)
+Kids <- neiss %>%
+    subset(Age <18 & Age > 1)
+    
 
 #define ui
 ui <- fluidPage(theme = shinytheme("slate"),
@@ -43,6 +45,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
     sidebarLayout(
         #Select inputs
         sidebarPanel(
+            h5("Use this tab to explore the demographics associated with the data."),
             # Select data set
             radioButtons(
                 inputId = "data_set", 
@@ -56,14 +59,16 @@ ui <- fluidPage(theme = shinytheme("slate"),
             #Select x-axis
             selectInput(
                 inputId = "x",
-                label = "X-axis:",
+                label = "Demographic of Interest:",
                 choices = c("Race", "Sex", "Body Part" = "Body_Part", "Diagnosis"),
                 selected = "Race"
             )
         ),
         #Select output
         mainPanel(
-            plotOutput(outputId = "histogram")
+            plotOutput(outputId = "histogram"),
+            
+            tableOutput(outputId = "summary")
         )
     )
     ),
@@ -75,11 +80,11 @@ ui <- fluidPage(theme = shinytheme("slate"),
                          radioButtons(
                              inputId = "Product_set", 
                              label = "Select Age Range:",
-                             choices = c("Under 2 years old" = "Babies2",
+                             choices = c("Under 2 years old" = "Babies",
                                          "2-17 years old"    = "Kids",
                                          "18 years or older" = "Adults"
                              ),
-                             selected = "Babies2")),
+                             selected = "Babies")),
                     #Select output
                          mainPanel(
                              plotOutput(outputId = "Product_histogram")
@@ -100,7 +105,7 @@ server <- function(input, output, session) {
     Product_selected <- reactive({
         get(input$Product_set)
     })
-    
+    #demographic tab
     output$histogram <- renderPlot({
         ggplot(data = data_selected() , aes_string(x = input$x))+
             geom_bar( fill = "blue")+
@@ -108,11 +113,19 @@ server <- function(input, output, session) {
             theme_bw()
     })
     
+    output$summary <- renderTable({
+        data_selected() %>%
+            group_by(input$x) %>%
+            summarise(n=n()) %>% 
+            arrange(desc(n))
+    })
+    
+    #product tab
     output$Product_histogram <- renderPlot({
         Product_selected() %>%
             group_by(Product_1) %>% 
             summarise(n=n()) %>% 
-            arrange(desc(n)) %>% 
+            arrange(desc(n)) %>%
             slice_head(n=10) %>% 
             ggplot(aes(x= Product_1, y=n))+
             geom_bar(stat = "identity", fill = "blue")+
