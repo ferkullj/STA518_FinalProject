@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r load_packages, include = FALSE}
+```{r load_packages, message = FALSE}
 
 library(tidyverse)
 #install.packages("tidytext")
@@ -29,6 +29,8 @@ bow <- ow %>%
   subset(Age > 200)
 aow <- ow %>% 
   subset(Age <200 & Age > 17)
+kow <- ow %>%
+  subset(Age <18 & Age > 1)
 
 ```
 
@@ -123,6 +125,7 @@ bow %>%
 ```
 
 
+
 ```{r breaking down Treatment_Date variable}
 
 bow <- bow %>% 
@@ -177,9 +180,12 @@ filt_nar <- filt_nar %>%
 require(devtools)
 #install_github("lchiffon/wordcloud2")
 library(wordcloud2)
+
+png("wordcloud.png")
 wordcloud2(filt_nar,
            color = "red",
-           backgroundColor = "white")
+           backgroundColor = "gray")
+dev.off()
 
 ```
 
