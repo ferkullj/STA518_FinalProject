@@ -18,6 +18,15 @@ neiss <- neiss %>%
         Product_1 == 1395 ~ "toys",
         Product_1 == 611 ~ "bathtubs",
         Product_1 == 1931 ~ "tablet or capsule drugs",
+        Product_1 == 5040 ~ "bicycles or accessories",
+        Product_1 == 1267 ~ "soccer",
+        Product_1 == 1233 ~ "trampolines",
+        Product_1 == 1211 ~ "football",
+        Product_1 == 1205 ~ "basketball",
+        Product_1 == 464 ~ "knives",
+        Product_1 == 4078 ~ "ladders",
+        Product_1 == 3299 ~ "exercise",
+        Product_1 == 1884 ~ "ceilings and walls",
         TRUE ~ as.character(Product_1)
     ))
 
