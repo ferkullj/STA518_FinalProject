@@ -68,7 +68,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
         mainPanel(
             plotOutput(outputId = "histogram"),
             
-            tableOutput(outputId = "summary")
+            dataTableOutput(outputId = "summary")
         )
     )
     ),
@@ -113,9 +113,10 @@ server <- function(input, output, session) {
             theme_bw()
     })
     
-    output$summary <- renderTable({
+    output$summary <- renderDataTable({
         data_selected() %>%
-            group_by(input$x) %>%
+            req(input$x) %>%
+            group_by(!! sym(input$x)) %>%
             summarise(n=n()) %>% 
             arrange(desc(n))
     })
