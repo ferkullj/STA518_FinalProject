@@ -41,9 +41,21 @@ neiss <- neiss %>%
             Sex == 1 ~ "Male",
             Sex == 2 ~ "Female",
             Sex == 0 ~ "Not recorded",
-            TRUE ~ as.character(Sex)
+            TRUE ~ as.character(Sex)),
+        #collapsed Body_Part for readability
+        Body_Part = case_when(
+            Body_Part == 75 | Body_Part == 94 | Body_Part == 77 | Body_Part == 76 | Body_Part == 88 | Body_Part == 89 ~ "Neck, Face, or Head",
+            Body_Part == 30 | Body_Part == 31 ~ "Upper trunk",
+            Body_Part == 80 | Body_Part == 32 | Body_Part == 33 | Body_Part == 34 | Body_Part == 82 | Body_Part == 92 ~ "Arm or Hand",
+            Body_Part == 79 | Body_Part == 38 ~ "Lower trunk",
+            Body_Part == 81 | Body_Part == 35 | Body_Part == 36 | Body_Part == 37 | Body_Part == 83 | Body_Part == 93 ~ "Leg or Foot",
+            Body_Part == 84 | Body_Part == 85 ~ "Large percent of body",
+            Body_Part == 87 ~ "Not Stated",
+            Body_Part == 0 ~ "Internal",
+            TRUE ~ as.character(Body_Part)
         )
         )
+        
     
 
 Babies <- neiss %>% 
@@ -134,6 +146,7 @@ server <- function(input, output, session) {
     output$histogram <- renderPlot({
         ggplot(data = data_selected() , aes_string(x = input$x))+
             geom_bar( fill = "blue")+
+            coord_flip()+
             labs( title = paste(input$x,"Distribution for",input$data_set))+
             theme_bw()
     })
