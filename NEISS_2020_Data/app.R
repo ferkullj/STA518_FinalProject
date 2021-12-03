@@ -27,8 +27,24 @@ neiss <- neiss %>%
         Product_1 == 4078 ~ "ladders",
         Product_1 == 3299 ~ "exercise",
         Product_1 == 1884 ~ "ceilings and walls",
-        TRUE ~ as.character(Product_1)
-    ))
+        TRUE ~ as.character(Product_1)),
+        Race = case_when(
+            Race == 0 ~ "Not Stated",
+            Race == 1 ~ "White",
+            Race == 2 ~ "Black",
+            Race == 3 ~ "Other",
+            Race == 4 ~ "Asian",
+            Race == 5 ~ "American Indian",
+            Race == 6 ~ "Native Hawaiian",
+            TRUE ~ as.character(Race)),
+        Sex = case_when(
+            Sex == 1 ~ "Male",
+            Sex == 2 ~ "Female",
+            Sex == 0 ~ "Not recorded",
+            TRUE ~ as.character(Sex)
+        )
+        )
+    
 
 Babies <- neiss %>% 
     subset(Age > 200) %>% 
