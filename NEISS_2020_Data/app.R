@@ -52,9 +52,10 @@ neiss <- neiss %>%
             Body_Part == 84 | Body_Part == 85 ~ "Large percent of body",
             Body_Part == 87 ~ "Not Stated",
             Body_Part == 0 ~ "Internal",
-            TRUE ~ as.character(Body_Part)
+            TRUE ~ as.character(Body_Part))
         )
-        )
+        
+        
         
     
 
@@ -99,7 +100,10 @@ ui <- fluidPage(theme = shinytheme("slate"),
                 label = "Demographic of Interest:",
                 choices = c("Race", "Sex", "Body Part" = "Body_Part", "Diagnosis"),
                 selected = "Race"
-            )
+            ),
+            
+            #Add text
+            textOutput("demo_tab"),
         ),
         #Select output
         mainPanel(
@@ -143,6 +147,24 @@ server <- function(input, output, session) {
         get(input$Product_set)
     })
     #demographic tab
+    
+    output$demo_tab <- renderText({
+        if (input$x == "Race"){
+            paste("There seems to be similar proportions of each race for each age group.
+                  It is hard to tell if this is truly representative of the U.S. since so
+                   many patients did not have their race stated.")
+        } else if (input$x == "Sex"){
+            paste("There are significantly more male than female hospital visits for the younger age groups.
+                  This balances out in the adult age group.")
+        } else if (input$x == "Body_Part"){
+            paste("The most common injuries for all age groups are on the neck, face, or head.
+                  These injuries make up a large proportion of the baby group.")
+        } else {paste("Many different diagnoses were given the same code.
+                      For this reason, I left the codes as stated in the NEISS Coding Manual
+                       and encourage you to look one up in the link above if you are interested.
+                      The codes for diagnoses begin on page 163.")}
+    })
+    
     output$histogram <- renderPlot({
         ggplot(data = data_selected() , aes_string(x = input$x))+
             geom_bar( fill = "blue")+
