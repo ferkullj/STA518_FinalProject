@@ -75,7 +75,8 @@ ui <- fluidPage(theme = shinytheme("slate"),
     br(),
     h6("This app looks at data from the National Electronic Injury Surveillance System in the U.S..
        Each observation is a patient's summary of a hospital visit.", align = "center"),
-    a("NEISS Coding Manual", href = "https://www.cpsc.gov/s3fs-public/2019_NEISS_Coding_Manual.pdf"),
+    h6("For more information on NEISS or the data set, click here:",a("NEISS Coding Manual", href = "https://www.cpsc.gov/s3fs-public/2019_NEISS_Coding_Manual.pdf")
+       ,align = "center"),
     #creates separate tabs
     tabsetPanel(
         #creates panel with demographics
