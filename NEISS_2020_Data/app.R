@@ -152,7 +152,9 @@ ui <- fluidPage(theme = shinytheme("slate"),
                  paste("Ex: 12YOF means the narrative is for a 12 year old female"),
                  br(),
                   dataTableOutput(outputId = "narrative"),
-                  )
+                  ),
+      tabPanel("Treatment Date"),
+      tabPanel("Alochol")
     )
 )
 #Define server
