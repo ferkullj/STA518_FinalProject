@@ -119,6 +119,9 @@ ui <- fluidPage(theme = shinytheme("slate"),
                  sidebarLayout(
                      #Select inputs
                      sidebarPanel(
+                       h5("Use this tab to view the top 10 products involved with hospital visits.
+                          You can also look up a product using the NEISS Coding Manual to see its frequency.
+                          Product codes begin on page 175."),
                          radioButtons(
                              inputId = "Product_set", 
                              label = "Select Age Range:",
@@ -126,15 +129,22 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                          "2-17 years old"    = "Kids",
                                          "18 years or older" = "Adults"
                              ),
-                             selected = "Babies")),
+                             selected = "Babies"),
+                     
+                     #Add text
+                     textOutput("product_tab")),
+                     
                     #Select output
                          mainPanel(
-                             plotOutput(outputId = "Product_histogram")
+                             plotOutput(outputId = "Product_histogram"),
+                             
+                             dataTableOutput(outputId = "prod_summary")
                          )
                      )
                  )
                  ),
-        tabPanel("Narrative")
+        tabPanel("Narrative",
+                 splitLayout())
     )
 
 #Define server
@@ -183,6 +193,12 @@ server <- function(input, output, session) {
     })
     
     #product tab
+    
+    output$product_tab <- renderText({
+      paste("Floor, bed, and stair products were frequently involved with injuries for each age group.
+            Sports were a popular reason for injury in the 2-17 year old age group.")
+    })
+    
     output$Product_histogram <- renderPlot({
         Product_selected() %>%
             group_by(Product_1) %>% 
@@ -194,6 +210,13 @@ server <- function(input, output, session) {
             coord_flip()+
             labs( title = paste("Most Frequent Products Involved in Injuries for",input$Product_set))+
             theme_bw()
+    })
+    
+    output$prod_summary <- renderDataTable({
+      data_selected() %>%
+        group_by(Product_1) %>%
+        summarise(n=n()) %>% 
+        arrange(desc(n))
     })
     
 }
