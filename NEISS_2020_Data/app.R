@@ -68,6 +68,7 @@ Kids <- neiss %>%
     subset(Age <18 & Age > 1)
     
 
+
 #define ui
 ui <- fluidPage(theme = shinytheme("slate"),
     titlePanel(h1("Investigating Consumer Product Injuries", align = "center")),
@@ -142,12 +143,16 @@ ui <- fluidPage(theme = shinytheme("slate"),
                          )
                      )
                  ),
-                 
+          #Narrative tab 
         tabPanel("Narrative",
-                 splitLayout(
-                   paste("Hi"),
-                   paste("bye")
-                 ))
+                 paste("Use this tab to explore the short reports on an injury.
+                       You can use the search bar to look at a certain product or word in the narrative."),
+                 paste("The first numbers in Narrative are the age of the patient. The next 3 symbols stand
+                       for whether the age is in month or years and the patients sex."),
+                 paste("Ex: 12YOF means the narrative is for a 12 year old female"),
+                 br(),
+                  dataTableOutput(outputId = "narrative"),
+                  )
     )
 )
 #Define server
@@ -222,6 +227,15 @@ server <- function(input, output, session) {
         arrange(desc(n))
     })
     
+    #narrative tab
+    
+    output$narrative <- renderDataTable({
+      neiss %>% 
+        mutate( Product = Product_1, Narrative = Narrative_1) %>% 
+        select(c(Product,Narrative)) %>%
+        arrange(Product)
+      
+    })
 }
 
 #create Shiny app object
