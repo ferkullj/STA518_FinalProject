@@ -141,12 +141,12 @@ ui <- fluidPage(theme = shinytheme("slate"),
                              dataTableOutput(outputId = "prod_summary")
                          )
                      )
-                 )
                  ),
+                 
         tabPanel("Narrative",
                  splitLayout())
     )
-
+)
 #Define server
 server <- function(input, output, session) {
     
