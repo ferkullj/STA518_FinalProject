@@ -144,7 +144,10 @@ ui <- fluidPage(theme = shinytheme("slate"),
                  ),
                  
         tabPanel("Narrative",
-                 splitLayout())
+                 splitLayout(
+                   paste("Hi"),
+                   paste("bye")
+                 ))
     )
 )
 #Define server

@@ -34,6 +34,16 @@ kow <- ow %>%
 
 ```
 
+```{r getting only product and narrative together}
+
+prod_narr <- bow %>% 
+  mutate( Product = Product_1, Narrative = Narrative_1) %>% 
+  select(c(Product,Narrative)) %>%
+  arrange(Product)
+
+```
+
+
 ```{r getting variable code descriptions from pdf}
 #install.packages("Rcpp")
 library(Rcpp)
