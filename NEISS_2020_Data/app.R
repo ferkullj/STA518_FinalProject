@@ -250,7 +250,8 @@ ui <- fluidPage(theme = shinytheme("slate"),
                  ),
                  #Select output
                  mainPanel(
-                   paste("Hi!"))
+                   verbatimTextOutput(outputId = "freq"),
+                   verbatimTextOutput(outputId = "chi_test"))
                  )
                )
       ),
@@ -367,6 +368,14 @@ server <- function(input, output, session) {
     #Chi square tab
     output$chi_tab <- renderText({
       paste("You did it!")
+    })
+    
+    output$freq <- renderPrint({
+      table(square$Fire, square$Alcohol)
+    })
+    
+    output$chi_test <- renderPrint({
+      chisq.test(square$Fire, square$Alcohol, correct = FALSE)
     })
 }
 
