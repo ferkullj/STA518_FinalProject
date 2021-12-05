@@ -74,7 +74,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
     titlePanel(h1("Investigating Consumer Product Injuries", align = "center")),
     div(img( src = "wordcloud.png", align = "center", height = "250", width = "500"), style = "text-align: center;"),
     br(),
-    h6("This app looks at data from the National Electronic Injury Surveillance System in the U.S..
+    h6("This app looks at data from the 2020 National Electronic Injury Surveillance System in the U.S..
        Each observation is a patient's summary of a hospital visit.", align = "center"),
     h6("For more information on NEISS or the data set, click here:",a("NEISS Coding Manual", href = "https://www.cpsc.gov/s3fs-public/2019_NEISS_Coding_Manual.pdf")
        ,align = "center"),
