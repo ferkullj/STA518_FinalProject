@@ -163,7 +163,8 @@ ui <- fluidPage(theme = shinytheme("slate"),
                sidebarLayout(
                  #Select inputs
                  sidebarPanel(
-                   h5("This tab shows you the amount of cases per month.
+                   h5("This tab shows you the amount of hospital visits associated with
+                   products in 2020 per month.
                       It is also a place to play with some of the settings on the plot."),
                    radioButtons(
                      inputId = "date_set", 
@@ -173,12 +174,26 @@ ui <- fluidPage(theme = shinytheme("slate"),
                                  "18 years or older" = "Adults"
                      ),
                      selected = "Babies"),
-                   radioButtons(
-                     inputId = "color", 
-                     label = "Select Color:",
-                     choices = c("Red", "Blue", "Green", "Purple"
-                     ),
-                     selected = "Red"),
+                   
+                   textInput(
+                     inputId = "line_color", 
+                     label = "Specify Line Color:",
+                     value = "blue",
+                     placeholder = "-Enter a color-"),
+                   
+                   textInput(
+                     inputId = "dot_color", 
+                     label = "Specify Dot Color:",
+                     value = "red",
+                     placeholder = "-Enter a color-"),
+                   
+                   sliderInput(
+                     inputId = "dot_size",
+                     label = "Choose Dot Size:",
+                     min = 1, max = 10,
+                     value = 3,
+                     step = 1
+                   ),
                    
                    #Add text
                    textOutput("date_tab")),
@@ -282,7 +297,9 @@ server <- function(input, output, session) {
     #date tab
     
     output$date_tab <- renderText({
-      paste("Have fun!")
+      paste("April has far fewer hospital visits than the other months,
+            but June is the declared National Safety Month in the U.S.
+            January had the most hospital visits in 2020.")
     })
     
     output$date_lollipop <- renderPlot({
@@ -292,9 +309,10 @@ server <- function(input, output, session) {
         arrange(day_count) %>% 
         mutate(Month = factor(Month, Month)) %>% 
         ggplot(aes(x=Month, y=day_count)) +
-        geom_point() + 
-        geom_segment( aes(x=Month, xend=Month, y=0, yend=day_count))+
-        coord_flip()
+        geom_point(size = input$dot_size, color = input$dot_color) + 
+        geom_segment( aes(x=Month, xend=Month, y=0, yend=day_count), color= input$line_color)+
+        coord_flip()+
+        labs( title = "Number of Consumer Product Related Hospital Visits by Month in 2020", y= "Number of Hospital Visits")
     })
 }
 
