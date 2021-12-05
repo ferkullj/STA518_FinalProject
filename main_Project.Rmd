@@ -216,6 +216,8 @@ dev.off()
 ```
 
 ```{r trying chisq test for alcohol, drugs, and fire}
+install.packages("chisq.posthoc.test")
+library(chisq.posthoc.test)
 
 alc <- ow %>% 
   mutate(Fire_Involvement = case_when(
@@ -226,9 +228,26 @@ alc <- ow %>%
   ),
   Drug = case_when(
     Drug == 0 ~ "No", TRUE ~ "Yes"
+  ),
+  Disposition = case_when(
+    Disposition == 1 ~ "Treated & Released", Disposition == 2 ~ "Treated & Transferred", Disposition == 4 ~ "Treated & Hospitalized", Disposition == 5 ~ "Held for Observation",
+    Disposition == 6 ~ "Left Without Being Seen", Disposition == 8 ~ "Fatality",
+    TRUE ~ "Unknown"
   )) %>% 
   mutate(Fire = Fire_Involvement) %>% 
-  select(c(Fire, Alcohol, Drug))
+  select(c(Fire, Alcohol, Drug, Disposition))
+
+table(alc$Fire, alc$Alcohol)
+chisq.test(alc$Fire, alc$Alcohol, correct = FALSE)
+
+#M <- as.table(rbind(alc$Fire, alc$Alcohol))
+#dimnames(M) <- list(Fire = alc$Fire, Alcohol = alc$Alcohol)
+#chisq.posthoc.test(M)
+
+
+
+table(alc$Fire, alc$Disposition)
+chisq.test(alc$Fire, alc$Disposition, correct = FALSE)
 
 ```
 
