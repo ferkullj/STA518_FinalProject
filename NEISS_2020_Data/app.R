@@ -6,7 +6,8 @@ library(shinythemes)
 
 neiss <- readr::read_csv("neiss2020.csv")
 
-neiss <- neiss %>% 
+neiss <- neiss %>%
+  #labeled top products
     mutate(Product_1 = case_when(
         Product_1 == 4076 ~ "beds or bedframes",
         Product_1 == 1807 ~ "floors or flooring materials",
@@ -52,12 +53,16 @@ neiss <- neiss %>%
             Body_Part == 84 | Body_Part == 85 ~ "Large percent of body",
             Body_Part == 87 ~ "Not Stated",
             Body_Part == 0 ~ "Internal",
-            TRUE ~ as.character(Body_Part))
-        )
+            TRUE ~ as.character(Body_Part)))
         
+neiss <- neiss %>% 
+  separate(Treatment_Date, into = c("Month", "Day", "Year"),"/") %>% 
+  select( -("Year")) %>% 
+  mutate( Month = case_when(
+          Month == 1 ~ "January", Month == 2 ~ "February", Month == 3 ~ "March", Month == 4 ~ "April", Month == 5 ~ "May", Month == 6 ~ "June", 
+          Month == 7 ~ "July", Month == 8 ~ "August", Month == 9 ~ "September", Month == 10 ~ "October", Month == 11 ~ "November", TRUE ~ "December"
+        ))
         
-        
-    
 
 Babies <- neiss %>% 
     subset(Age > 200) %>% 
@@ -153,7 +158,37 @@ ui <- fluidPage(theme = shinytheme("slate"),
                  br(),
                   dataTableOutput(outputId = "narrative"),
                   ),
-      tabPanel("Treatment Date"),
+      #Date tab
+      tabPanel("Treatment Date",
+               sidebarLayout(
+                 #Select inputs
+                 sidebarPanel(
+                   h5("This tab shows you the amount of cases per month.
+                      It is also a place to play with some of the settings on the plot."),
+                   radioButtons(
+                     inputId = "date_set", 
+                     label = "Select Age Range:",
+                     choices = c("Under 2 years old" = "Babies",
+                                 "2-17 years old"    = "Kids",
+                                 "18 years or older" = "Adults"
+                     ),
+                     selected = "Babies"),
+                   radioButtons(
+                     inputId = "color", 
+                     label = "Select Color:",
+                     choices = c("Red", "Blue", "Green", "Purple"
+                     ),
+                     selected = "Red"),
+                   
+                   #Add text
+                   textOutput("date_tab")),
+                 
+                 #Select output
+                 mainPanel(
+                   plotOutput(outputId = "date_lollipop")
+                 )
+               )
+               ),
       tabPanel("Alochol")
     )
 )
@@ -167,6 +202,11 @@ server <- function(input, output, session) {
     Product_selected <- reactive({
         get(input$Product_set)
     })
+    
+    date_selected <- reactive({
+      get(input$date_set)
+    })
+    
     #demographic tab
     
     output$demo_tab <- renderText({
@@ -237,6 +277,24 @@ server <- function(input, output, session) {
         select(c(Product,Narrative)) %>%
         arrange(Product)
       
+    })
+    
+    #date tab
+    
+    output$date_tab <- renderText({
+      paste("Have fun!")
+    })
+    
+    output$date_lollipop <- renderPlot({
+      date_selected() %>% 
+        group_by(Month) %>% 
+        summarise(day_count = n()) %>% 
+        arrange(day_count) %>% 
+        mutate(Month = factor(Month, Month)) %>% 
+        ggplot(aes(x=Month, y=day_count)) +
+        geom_point() + 
+        geom_segment( aes(x=Month, xend=Month, y=0, yend=day_count))+
+        coord_flip()
     })
 }
 
