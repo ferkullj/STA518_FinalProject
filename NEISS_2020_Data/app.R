@@ -54,7 +54,26 @@ neiss <- neiss %>%
             Body_Part == 87 ~ "Not Stated",
             Body_Part == 0 ~ "Internal",
             TRUE ~ as.character(Body_Part)))
-        
+
+#edit variables for chisq tab
+square <- neiss %>% 
+  mutate(Fire_Involvement = case_when(
+    Fire_Involvement == 0 ~ "No", TRUE ~ "Yes"
+  ),
+  Alcohol = case_when(
+    Alcohol == 0 ~ "No", TRUE ~ "Yes"
+  ),
+  Drug = case_when(
+    Drug == 0 ~ "No", TRUE ~ "Yes"
+  ),
+  Disposition = case_when(
+    Disposition == 1 ~ "Treated & Released", Disposition == 2 ~ "Treated & Transferred", Disposition == 4 ~ "Treated & Hospitalized", Disposition == 5 ~ "Held for Observation",
+    Disposition == 6 ~ "Left Without Being Seen", Disposition == 8 ~ "Fatality",
+    TRUE ~ "Unknown"
+  )) %>% 
+  mutate(Fire = Fire_Involvement)
+
+#edit treat_date variable      
 neiss <- neiss %>% 
   separate(Treatment_Date, into = c("Month", "Day", "Year"),"/") %>% 
   select( -("Year")) %>% 
@@ -183,7 +202,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                    
                    textInput(
                      inputId = "dot_color", 
-                     label = "Type Dot Color:",
+                     label = " Dot Color:",
                      value = "red",
                      placeholder = "-Enter a color-"),
                    
@@ -204,9 +223,39 @@ ui <- fluidPage(theme = shinytheme("slate"),
                  )
                )
                ),
-      tabPanel("Alochol")
-    )
-)
+      #Chi-Square Tests tab
+      tabPanel("Chi-Square Tests",
+               sidebarLayout(
+                 #Select inputs
+                 sidebarPanel(
+                   h5("Use this tab to perform chi-squared tests on some of the variables."),
+  
+                   #Select var1
+                   selectInput(
+                     inputId = "var1",
+                     label = "Select First Variable:",
+                     choices = c("Sex", "Fire", "Alcohol", "Drug", "Disposition" ),
+                     selected = "Sex"
+                   ),
+                   
+                   #Select var2
+                   selectInput(
+                     inputId = "var2",
+                     label = "Select Second Variable:",
+                     choices = c("Sex", "Fire", "Alcohol", "Drug", "Disposition" ),
+                     selected = "Fire"
+                   ),
+                   #Add text
+                   textOutput("chi_tab"),
+                 ),
+                 #Select output
+                 mainPanel(
+                   paste("Hi!"))
+                 )
+               )
+      ),
+               )
+
 #Define server
 server <- function(input, output, session) {
     
@@ -313,6 +362,11 @@ server <- function(input, output, session) {
         geom_segment( aes(x=Month, xend=Month, y=0, yend=day_count), color= input$line_color)+
         coord_flip()+
         labs( title = "Number of Consumer Product Related Hospital Visits by Month in 2020", y= "Number of Hospital Visits")
+    })
+    
+    #Chi square tab
+    output$chi_tab <- renderText({
+      paste("You did it!")
     })
 }
 
