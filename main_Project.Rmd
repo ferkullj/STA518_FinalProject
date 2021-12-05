@@ -82,9 +82,9 @@ bow <- bow %>%
 
 ```{r viewing counts}
 #install.packages("modelsummary")
-library(modelsummary)
+#library(modelsummary)
 #cross-tabs for variables
-datasummary_crosstab(Alcohol ~ Body_Part * Diagnosis, output = "alcohol.html",data = bow)
+#datasummary_crosstab(Alcohol ~ Body_Part * Diagnosis, output = "alcohol.html",data = bow)
 
 #group by product used
 bow %>% 
@@ -212,6 +212,23 @@ wordcloud2(filt_nar,
            color = "red",
            backgroundColor = "gray")
 dev.off()
+
+```
+
+```{r trying chisq test for alcohol, drugs, and fire}
+
+alc <- ow %>% 
+  mutate(Fire_Involvement = case_when(
+    Fire_Involvement == 0 ~ "No", TRUE ~ "Yes"
+  ),
+  Alcohol = case_when(
+    Alcohol == 0 ~ "No", TRUE ~ "Yes"
+  ),
+  Drug = case_when(
+    Drug == 0 ~ "No", TRUE ~ "Yes"
+  )) %>% 
+  mutate(Fire = Fire_Involvement) %>% 
+  select(c(Fire, Alcohol, Drug))
 
 ```
 

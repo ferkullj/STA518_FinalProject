@@ -177,13 +177,13 @@ ui <- fluidPage(theme = shinytheme("slate"),
                    
                    textInput(
                      inputId = "line_color", 
-                     label = "Specify Line Color:",
+                     label = "Type Line Color:",
                      value = "blue",
                      placeholder = "-Enter a color-"),
                    
                    textInput(
                      inputId = "dot_color", 
-                     label = "Specify Dot Color:",
+                     label = "Type Dot Color:",
                      value = "red",
                      placeholder = "-Enter a color-"),
                    
