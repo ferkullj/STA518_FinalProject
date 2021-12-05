@@ -253,7 +253,9 @@ ui <- fluidPage(theme = shinytheme("slate"),
                    verbatimTextOutput(outputId = "freq"),
                    verbatimTextOutput(outputId = "chi_test"))
                  )
-               )
+               ),
+        tabPanel("About",
+                 h5("About this project", align = "center"))
       ),
                )
 
