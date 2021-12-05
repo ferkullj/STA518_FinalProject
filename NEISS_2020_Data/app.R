@@ -53,25 +53,23 @@ neiss <- neiss %>%
             Body_Part == 84 | Body_Part == 85 ~ "Large percent of body",
             Body_Part == 87 ~ "Not Stated",
             Body_Part == 0 ~ "Internal",
-            TRUE ~ as.character(Body_Part)))
-
-#edit variables for chisq tab
-square <- neiss %>% 
-  mutate(Fire_Involvement = case_when(
-    Fire_Involvement == 0 ~ "No", TRUE ~ "Yes"
-  ),
-  Alcohol = case_when(
-    Alcohol == 0 ~ "No", TRUE ~ "Yes"
-  ),
-  Drug = case_when(
-    Drug == 0 ~ "No", TRUE ~ "Yes"
-  ),
-  Disposition = case_when(
-    Disposition == 1 ~ "Treated & Released", Disposition == 2 ~ "Treated & Transferred", Disposition == 4 ~ "Treated & Hospitalized", Disposition == 5 ~ "Held for Observation",
-    Disposition == 6 ~ "Left Without Being Seen", Disposition == 8 ~ "Fatality",
-    TRUE ~ "Unknown"
-  )) %>% 
-  mutate(Fire = Fire_Involvement)
+            TRUE ~ as.character(Body_Part)),
+        #edit vars for Chi tab
+        Fire_Involvement = case_when(
+          Fire_Involvement == 0 ~ "No", TRUE ~ "Yes"
+        ),
+        Alcohol = case_when(
+          Alcohol == 0 ~ "No", TRUE ~ "Yes"
+        ),
+        Drug = case_when(
+          Drug == 0 ~ "No", TRUE ~ "Yes"
+        ),
+        Disposition = case_when(
+          Disposition == 1 ~ "Treated & Released", Disposition == 2 ~ "Treated & Transferred", Disposition == 4 ~ "Treated & Hospitalized", Disposition == 5 ~ "Held for Observation",
+          Disposition == 6 ~ "Left Without Being Seen", Disposition == 8 ~ "Fatality",
+          TRUE ~ "Unknown"
+        )) %>% 
+          mutate(Fire = Fire_Involvement)
 
 #edit treat_date variable      
 neiss <- neiss %>% 
@@ -341,7 +339,7 @@ server <- function(input, output, session) {
     output$narrative <- renderDataTable({
       neiss %>% 
         mutate( Product = Product_1, Narrative = Narrative_1) %>% 
-        select(c(Product,Narrative)) %>%
+        select(c(Product,Narrative, Disposition)) %>%
         arrange(Product)
       
     })
@@ -373,11 +371,11 @@ server <- function(input, output, session) {
     })
     
     output$freq <- renderPrint({
-      table(square$Fire, square$Alcohol)
+      table(neiss$Fire, neiss$Alcohol)
     })
     
     output$chi_test <- renderPrint({
-      chisq.test(square$Fire, square$Alcohol, correct = FALSE)
+      chisq.test(neiss$Fire, neiss$Alcohol, correct = FALSE)
     })
 }
 
