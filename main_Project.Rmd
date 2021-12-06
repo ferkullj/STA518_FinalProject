@@ -216,7 +216,7 @@ dev.off()
 ```
 
 ```{r trying chisq test for alcohol, drugs, and fire}
-install.packages("chisq.posthoc.test")
+#install.packages("chisq.posthoc.test")
 library(chisq.posthoc.test)
 
 alc <- ow %>% 
@@ -237,15 +237,24 @@ alc <- ow %>%
   mutate(Fire = Fire_Involvement) %>% 
   select(c(Fire, Alcohol, Drug, Disposition))
 
+#chisq test
 table(alc$Fire, alc$Alcohol)
 chisq.test(alc$Fire, alc$Alcohol, correct = FALSE)
+#post hoc
+fcount <- alc %>%
+  group_by(Fire) %>% 
+  summarize(n=n())
 
-#M <- as.table(rbind(alc$Fire, alc$Alcohol))
-#dimnames(M) <- list(Fire = alc$Fire, Alcohol = alc$Alcohol)
-#chisq.posthoc.test(M)
+acount <- alc %>%
+  group_by(Alcohol) %>%
+  summarize(n=n())
+
+M <- as.table(rbind(fcount$n, acount$n))
+dimnames(M) <- list(Fire = fcount$Fire, Alcohol = acount$Alcohol)
+chisq.posthoc.test(M, method = "bonferroni")
 
 
-
+#Chi sq test
 table(alc$Fire, alc$Disposition)
 chisq.test(alc$Fire, alc$Disposition, correct = FALSE)
 
