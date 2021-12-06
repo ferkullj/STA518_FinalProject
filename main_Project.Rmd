@@ -238,19 +238,10 @@ alc <- ow %>%
   select(c(Fire, Alcohol, Drug, Disposition))
 
 #chisq test
-Q <- table(alc$Fire, alc$Alcohol)
+M <- table(alc$Fire, alc$Alcohol)
+M
 chisq.test(alc$Fire, alc$Alcohol, correct = FALSE)
 #post hoc
-fcount <- alc %>%
-  group_by(Fire) %>% 
-  summarize(n=n())
-
-acount <- alc %>%
-  group_by(Alcohol) %>%
-  summarize(n=n())
-
-M <- as.table(rbind(fcount$n, acount$n))
-dimnames(M) <- list(Fire = fcount$Fire, Alcohol = acount$Alcohol)
 chisq.posthoc.test(M, method = "bonferroni")
 
 
