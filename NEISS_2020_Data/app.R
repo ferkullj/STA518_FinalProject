@@ -256,8 +256,15 @@ ui <- fluidPage(theme = shinytheme("slate"),
                    verbatimTextOutput(outputId = "post_hoc"))
                  )
                ),
-        tabPanel("About",
-                 h5("About this project", align = "center"))
+        tabPanel("Conclusions",
+                 h5("If you have questions or suggestions, email jferkull@yahoo.com", align = "center"),
+                 br(),
+                 h3("Demographics:", align = "center"),
+                 h3("Products:", align = "center"),
+                 h3("Narrative:", align = "center"),
+                 h3("Date:", align = "center"),
+                 h3("Chi-square:", align = "center")
+                 )
       ),
                )
 
