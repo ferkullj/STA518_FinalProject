@@ -248,8 +248,12 @@ ui <- fluidPage(theme = shinytheme("slate"),
                  ),
                  #Select output
                  mainPanel(
+                   h4("Frequency Table"),
                    verbatimTextOutput(outputId = "freq"),
-                   verbatimTextOutput(outputId = "chi_test"))
+                   h4("Chi-Square Test"),
+                   verbatimTextOutput(outputId = "chi_test"),
+                   h4("Post hoc Test"),
+                   verbatimTextOutput(outputId = "post_hoc"))
                  )
                ),
         tabPanel("About",
@@ -368,7 +372,10 @@ server <- function(input, output, session) {
     
     #Chi square tab
     output$chi_tab <- renderText({
-      paste("You did it!")
+      paste("The frequency table shows the counts of the variables you selected.
+            The Chi-Square test determines if the categorical variables are independent of each other.
+            If the p-value is less than .05, you can conclude the categorical variables are associated
+            and look at the Post hoc test.")
     })
     
     output$freq <- renderPrint({
@@ -377,6 +384,20 @@ server <- function(input, output, session) {
     
     output$chi_test <- renderPrint({
       chisq.test(neiss$Fire, neiss$Alcohol, correct = FALSE)
+    })
+    
+    output$post_hoc <- renderPrint({
+      count1 <- neiss %>%
+        group_by(Fire) %>% 
+        summarize(n=n())
+      
+      count2 <- neiss %>%
+        group_by(Alcohol) %>%
+        summarize(n=n())
+      
+      M <- as.table(rbind(count1$n, count2$n))
+      dimnames(M) <- list(Fire = count1$Fire, Alcohol = count2$Alcohol)
+      chisq.posthoc.test(M, method = "bonferroni")
     })
 }
 
