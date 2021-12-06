@@ -246,8 +246,11 @@ chisq.posthoc.test(M, method = "bonferroni")
 
 
 #Chi sq test
-table(alc$Fire, alc$Disposition)
+Q <- table(alc$Fire, alc$Disposition)
+Q
 chisq.test(alc$Fire, alc$Disposition, correct = FALSE)
+#post hoc
+chisq.posthoc.test(Q, method = "bonferroni")
 
 ```
 

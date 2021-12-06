@@ -223,7 +223,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                )
                ),
       #Chi-Square Tests tab
-      tabPanel("Chi-Square Tests",
+      tabPanel("Chi-Squared Tests",
                sidebarLayout(
                  #Select inputs
                  sidebarPanel(
@@ -251,7 +251,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                  mainPanel(
                    h4("Frequency Table"),
                    verbatimTextOutput(outputId = "freq"),
-                   h4("Chi-Square Test"),
+                   h4("Chi-Squared Test"),
                    verbatimTextOutput(outputId = "chi_test"),
                    h4("Post hoc Test"),
                    verbatimTextOutput(outputId = "post_hoc"))
@@ -387,7 +387,8 @@ server <- function(input, output, session) {
     })
     
     output$freq <- renderPrint({
-      table(neiss$Fire, neiss$Alcohol)
+      M <- table(neiss$Fire, neiss$Alcohol)
+      M
     })
     
     output$chi_test <- renderPrint({
@@ -395,16 +396,6 @@ server <- function(input, output, session) {
     })
     
     output$post_hoc <- renderPrint({
-      count1 <- neiss %>%
-        group_by(Fire) %>% 
-        summarize(n=n())
-      
-      count2 <- neiss %>%
-        group_by(Alcohol) %>%
-        summarize(n=n())
-      
-      M <- as.table(rbind(count1$n, count2$n))
-      dimnames(M) <- list(Fire = count1$Fire, Alcohol = count2$Alcohol)
       chisq.posthoc.test(M, method = "bonferroni")
     })
 }
