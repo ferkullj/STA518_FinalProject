@@ -238,7 +238,7 @@ alc <- ow %>%
   select(c(Fire, Alcohol, Drug, Disposition))
 
 #chisq test
-table(alc$Fire, alc$Alcohol)
+Q <- table(alc$Fire, alc$Alcohol)
 chisq.test(alc$Fire, alc$Alcohol, correct = FALSE)
 #post hoc
 fcount <- alc %>%
