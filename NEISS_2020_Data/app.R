@@ -319,7 +319,8 @@ server <- function(input, output, session) {
             group_by(Product_1) %>% 
             summarise(n=n()) %>% 
             arrange(desc(n)) %>%
-            slice_head(n=10) %>% 
+            slice_head(n=10) %>%
+            mutate(Product_1 = fct_reorder(Product_1, n, .desc = TRUE)) %>%
             ggplot(aes(x= Product_1, y=n))+
             geom_bar(stat = "identity", fill = "blue")+
             coord_flip()+
