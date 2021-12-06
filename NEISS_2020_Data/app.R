@@ -3,6 +3,7 @@ library(shiny)
 library(tidyverse)
 library(hrbrthemes)
 library(shinythemes)
+library(chisq.posthoc.test)
 
 neiss <- readr::read_csv("neiss2020.csv")
 
