@@ -257,11 +257,16 @@ ui <- fluidPage(theme = shinytheme("slate"),
                    verbatimTextOutput(outputId = "freq"),
                    h4("Chi-Squared Test"),
                    verbatimTextOutput(outputId = "chi_test"),
-                   h4("Post hoc Test"),
-                   verbatimTextOutput(outputId = "post_hoc"))
+                   h4("Post hoc Test", h6("This test is only needed when the frequency table is larger than 2x2.
+                                          Thus, this only really applies when Sex or Disposition are selected.")),
+                   verbatimTextOutput(outputId = "post_hoc"),
+                   paste("Ex: Choose Sex & Alcohol as your variables. The p-value for female is significant.
+            Looking at the residuals, you can say there are significantly less than expected females
+            where alcohol was involved with their injury since the No residual was positive."))
+                   
                  )
                ),
-        tabPanel("Conclusions",
+        tabPanel("About",
                  h5("If you have questions or suggestions, email jferkull@yahoo.com", align = "center"),
                  br(),
                  h3("Demographics:", align = "center"),
@@ -411,7 +416,9 @@ server <- function(input, output, session) {
       P <- table(chi[[var5_sym]], chi[[var6_sym]])
       
       chisq.posthoc.test(P, method = "bonferroni")
+      
     })
+    
 }
 
 #create Shiny app object
