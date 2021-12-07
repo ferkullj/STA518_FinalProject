@@ -101,7 +101,7 @@ chi <- neiss %>%
 
 #define ui
 ui <- fluidPage(theme = shinytheme("slate"),
-    titlePanel(h1("Investigating Consumer Product Injuries", align = "center")),
+    titlePanel(h1("Investigating Consumer Product-Related Injuries", align = "center")),
     div(img( src = "wordcloud.png", align = "center", height = "250", width = "500"), style = "text-align: center;"),
     br(),
     h6("This app looks at data from the 2020 National Electronic Injury Surveillance System in the U.S..
@@ -202,13 +202,13 @@ ui <- fluidPage(theme = shinytheme("slate"),
                    
                    textInput(
                      inputId = "line_color", 
-                     label = "Type Line Color:",
+                     label = "Type Line Color (red, grey, etc.):",
                      value = "blue",
                      placeholder = "-Enter a color-"),
                    
                    textInput(
                      inputId = "dot_color", 
-                     label = " Dot Color:",
+                     label = "Type Dot Color (red, grey, etc.):",
                      value = "red",
                      placeholder = "-Enter a color-"),
                    
