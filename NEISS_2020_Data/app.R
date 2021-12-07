@@ -81,7 +81,7 @@ neiss <- neiss %>%
           Month == 7 ~ "July", Month == 8 ~ "August", Month == 9 ~ "September", Month == 10 ~ "October", Month == 11 ~ "November", TRUE ~ "December"
         ))
         
-
+#separate ages
 Babies <- neiss %>% 
     subset(Age > 200) %>% 
     mutate( Age_in_Months = Age - 200)
@@ -89,6 +89,10 @@ Adults <- neiss %>%
     subset(Age <200 & Age > 17)
 Kids <- neiss %>%
     subset(Age <18 & Age > 1)
+
+#data used for chisq
+chi <- neiss %>% 
+  select(c(Fire, Alcohol, Sex, Drug, Disposition))
     
 
 
@@ -230,18 +234,18 @@ ui <- fluidPage(theme = shinytheme("slate"),
                    h5("Use this tab to perform chi-squared tests on some of the variables."),
   
                    #Select var1
-                   selectInput(
+                   varSelectInput(
                      inputId = "var1",
                      label = "Select First Variable:",
-                     choices = c("Sex", "Fire", "Alcohol", "Drug", "Disposition" ),
+                     data = chi,
                      selected = "Sex"
                    ),
                    
                    #Select var2
-                   selectInput(
+                   varSelectInput(
                      inputId = "var2",
                      label = "Select Second Variable:",
-                     choices = c("Sex", "Fire", "Alcohol", "Drug", "Disposition" ),
+                     data = chi,
                      selected = "Fire"
                    ),
                    #Add text
@@ -387,10 +391,8 @@ server <- function(input, output, session) {
     })
     
     output$freq <- renderPrint({
-      M <- neiss %>% 
-        select(c(!!sym(input$var1), !!sym(input$var2)))
-      Q <- as.matrix(M)
-      Q
+      M <- table(neiss$Fire, neiss$Alcohol)
+      M
     })
     
     output$chi_test <- renderPrint({
