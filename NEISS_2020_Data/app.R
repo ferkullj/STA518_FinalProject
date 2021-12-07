@@ -29,6 +29,9 @@ neiss <- neiss %>%
         Product_1 == 4078 ~ "ladders",
         Product_1 == 3299 ~ "exercise",
         Product_1 == 1884 ~ "ceilings and walls",
+        Product_1 == 1555 ~ "high chairs",
+        Product_1 == 1545 ~ "cribs",
+        Product_1 == 478 ~ "drinking glasses",
         TRUE ~ as.character(Product_1)),
         Race = case_when(
             Race == 0 ~ "Not Stated",
@@ -267,13 +270,19 @@ ui <- fluidPage(theme = shinytheme("slate"),
                  )
                ),
         tabPanel("About",
-                 h5("If you have questions or suggestions, email jferkull@yahoo.com", align = "center"),
-                 br(),
+                 h5("If you have questions or suggestions, please email jferkull@yahoo.com", align = "center"),
+                 h6("To view the data dictionary, click here:",a("Data Dictionary", href = "https://docs.google.com/spreadsheets/d/1N4b0hZIfVm6J6CuZKTN2Q9bRcWmiWTQX/edit#gid=999577082")
+                    ,align = "center"),
                  h3("Demographics:", align = "center"),
+                 h5("Explore the Age, Race, Sex, Body Part, or Diagnosis variables", align = "center"),
                  h3("Products:", align = "center"),
+                 h5("Explore the products most frequently involved with injury for different age groups", align = "center"),
                  h3("Narrative:", align = "center"),
-                 h3("Date:", align = "center"),
-                 h3("Chi-square:", align = "center")
+                 h5("Search the data set for products of interest or treatment outcomes", align = "center"),
+                 h3("Treatment Date:", align = "center"),
+                 h5("See how the number of hospital visits differed per month", align = "center"),
+                 h3("Chi-Squared Tests:", align = "center"),
+                 h5("Perform some statisical testing of your own", align = "center")
                  )
       ),
                )
@@ -376,7 +385,7 @@ server <- function(input, output, session) {
     
     output$date_lollipop <- renderPlot({
       date_selected() %>% 
-        group_by(Month) %>% 
+        group_by(Month) %>%
         summarise(day_count = n()) %>% 
         arrange(day_count) %>% 
         mutate(Month = factor(Month, Month)) %>% 
