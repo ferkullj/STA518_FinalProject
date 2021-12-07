@@ -387,8 +387,10 @@ server <- function(input, output, session) {
     })
     
     output$freq <- renderPrint({
-      M <- table(neiss$Fire, neiss$Alcohol)
-      M
+      M <- neiss %>% 
+        select(c(!!sym(input$var1), !!sym(input$var2)))
+      Q <- as.matrix(M)
+      Q
     })
     
     output$chi_test <- renderPrint({
