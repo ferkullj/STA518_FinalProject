@@ -238,7 +238,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                      inputId = "var1",
                      label = "Select First Variable:",
                      data = chi,
-                     selected = "Sex"
+                     selected = "Fire"
                    ),
                    
                    #Select var2
@@ -246,14 +246,14 @@ ui <- fluidPage(theme = shinytheme("slate"),
                      inputId = "var2",
                      label = "Select Second Variable:",
                      data = chi,
-                     selected = "Fire"
+                     selected = "Alcohol"
                    ),
                    #Add text
                    textOutput("chi_tab"),
                  ),
                  #Select output
                  mainPanel(
-                   h4("Frequency Table"),
+                   h4("Frequency Table", h5("(the first variable is on the left)")),
                    verbatimTextOutput(outputId = "freq"),
                    h4("Chi-Squared Test"),
                    verbatimTextOutput(outputId = "chi_test"),
@@ -391,16 +391,26 @@ server <- function(input, output, session) {
     })
     
     output$freq <- renderPrint({
-      M <- table(neiss$Fire, neiss$Alcohol)
+      var1_sym <- input$var1
+      var2_sym <- input$var2
+      M <- table(chi[[var1_sym]], chi[[var2_sym]])
       M
     })
     
     output$chi_test <- renderPrint({
-      chisq.test(neiss$Fire, neiss$Alcohol, correct = FALSE)
+      var3_sym <- input$var1
+      var4_sym <- input$var2
+      Q <- table(chi[[var3_sym]], chi[[var4_sym]])
+      
+      chisq.test(Q, correct = FALSE)
     })
     
     output$post_hoc <- renderPrint({
-      chisq.posthoc.test(M, method = "bonferroni")
+      var5_sym <- input$var1
+      var6_sym <- input$var2
+      P <- table(chi[[var5_sym]], chi[[var6_sym]])
+      
+      chisq.posthoc.test(P, method = "bonferroni")
     })
 }
 
