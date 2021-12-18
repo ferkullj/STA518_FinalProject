@@ -182,6 +182,18 @@ bow %>%
   ggplot(aes(x = Day)) +
   geom_bar()
 
+bow$Month <- factor(Month, levels = month.abb)
+month_order <- bow %>% 
+  group_by(Month) %>% 
+  summarise(day_count = n()) %>% 
+  arrange(day_count) %>% 
+  ggplot(aes(x=Month, y=day_count)) +
+  geom_point() + 
+  geom_segment( aes(x=Month, xend=Month, y=0, yend=day_count))+
+    coord_flip()
+
+
+
 ```
 
 
