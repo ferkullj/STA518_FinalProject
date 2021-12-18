@@ -221,7 +221,7 @@ ui <- fluidPage(theme = shinytheme("slate"),
                    ),
                    
                 
-                     selected = "Frequency"),
+            
                    #Add text
                    textOutput("date_tab")),
                  

@@ -182,7 +182,7 @@ bow %>%
   ggplot(aes(x = Day)) +
   geom_bar()
 
-bow$Month <- factor(Month, levels = month.abb)
+bow$Month <- factor(bow$Month, levels = month.abb)
 month_order <- bow %>% 
   group_by(Month) %>% 
   summarise(day_count = n()) %>% 
