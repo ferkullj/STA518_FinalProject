@@ -83,8 +83,10 @@ bow <- bow %>%
 ```{r viewing counts}
 #install.packages("modelsummary")
 #library(modelsummary)
+
 #cross-tabs for variables
 #datasummary_crosstab(Alcohol ~ Body_Part * Diagnosis, output = "alcohol.html",data = bow)
+#the crosstabs did not work as expected so I won't use it
 
 #group by product used
 bow %>% 

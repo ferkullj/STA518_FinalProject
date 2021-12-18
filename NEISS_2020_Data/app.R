@@ -294,6 +294,10 @@ server <- function(input, output, session) {
         get(input$data_set)
     })
     
+    data_p_selected <- reactive({
+      get(input$Product_set)
+    })
+    
     Product_selected <- reactive({
         get(input$Product_set)
     })
@@ -359,7 +363,7 @@ server <- function(input, output, session) {
     })
     
     output$prod_summary <- renderDataTable({
-      data_selected() %>%
+      data_p_selected() %>%
         group_by(Product_1) %>%
         summarise(n=n()) %>% 
         arrange(desc(n))
