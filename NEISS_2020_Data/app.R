@@ -220,6 +220,12 @@ ui <- fluidPage(theme = shinytheme("slate"),
                      step = 1
                    ),
                    
+                   radioButtons(
+                     inputId = "sort", 
+                     label = "Sort by:",
+                     choices = c( "Freqeuncy", "Date"
+                     ),
+                     selected = "Frequency"),
                    #Add text
                    textOutput("date_tab")),
                  
