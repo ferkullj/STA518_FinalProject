@@ -5,9 +5,9 @@ account: ferkullj
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5285342
-bundleId: 5343436
+bundleId: 5388127
 url: https://ferkullj.shinyapps.io/neiss_2020_data/
-when: 1638930076.09567
-lastSyncTime: 1638930076.09568
+when: 1639841167.43059
+lastSyncTime: 1639841167.4306
 asMultiple: FALSE
 asStatic: FALSE
